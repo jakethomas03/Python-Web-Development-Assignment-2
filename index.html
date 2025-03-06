@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Population Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    }
+    th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 3px solid #8f90fd;
+    border-left: 3px solid #8f90fd; 
+    border-right: 3px solid #8f90fd;
+    }
+    th {
+      background-color: #8f90fd;
+    }
+    tr:hover {
+      background-color: #8fbdce;
+    }
+  </style>
+</head>
+<body>
+  <h1>US Population</h1>
+  <table id="populationTable">
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Population</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+</table>
+
+<script>
+    async function fetchPopulationData() {
+    const apiUrl = "https://datausa.io/api/data?drilldowns=Nation&measures=Population";
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const populationData = data.data;
+
+        populationData.sort((b, a) => b.Year - a.Year);
+
+        const tableBody = document.querySelector("#populationTable tbody");
+
+        tableBody.innerHTML = "";
+
+        populationData.forEach(item => {
+        const row = document.createElement("tr");
+        const yearCell = document.createElement("td");
+        const populationCell = document.createElement("td");
+
+        yearCell.textContent = item.Year;
+        populationCell.textContent = item.Population.toLocaleString();
+
+        row.appendChild(yearCell);
+        row.appendChild(populationCell);
+        tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error fetching population data:", error);
+    }
+    }
+
+    window.onload = fetchPopulationData;
+</script>
+</body>
+</html>
